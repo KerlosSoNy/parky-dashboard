@@ -6,6 +6,7 @@ import Garage from "../../pages/garage/garage";
 import Cars from "../../pages/cars/cars";
 import Booking from "../../pages/booking/booking";
 import Transactions from "../../pages/transactions/transactions";
+import Home from "../../pages/home/home";
 
 
 export const routes = createBrowserRouter([
@@ -17,6 +18,10 @@ export const routes = createBrowserRouter([
         path: 'dashboard',
         element: <DashBoard />,
         children: [
+            {
+                path: '',
+                element: <Home />
+            },
             {
                 path: 'customers',
                 element: <Customers />
