@@ -10,14 +10,14 @@ export default function SideBar() {
 
     return (
         <div
-            className={`${Menu ? "!w-[300px]" : "!w-[100px]"} duration-500 transition-all`}
+            className={`${Menu ? "!w-[300px]" : "!w-[100px]"} duration-500 transition-all h-full z-50 border-[#E6EFF5]  border-e-[1px]`}
         >
             <div
                 className={`${Menu ? "w-[300px]" : "w-[100px]"
-                    }  transition-all duration-500 ease-out bg-gradient-to-b border-[#E6EFF5] from-white border-e-[1px] ${Menu ? "open" : "closed"
+                    }  transition-all duration-500 ease-out border-[#E6EFF5] bg-white  ${Menu ? "open" : "closed"
                     }`}
             >
-                <div className="h-screen">
+                <div className="">
                     <div className="flex items-center justify-center mb-2 pt-8 px-2 w-full ">
                         <img
                             src="/assets/logos/logo.svg"
