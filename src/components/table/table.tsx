@@ -83,6 +83,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
     };
 
     const handleEdit = (item_id: number) => {
+        console.log(item_id)
         if (onEdit) {
             onEdit(item_id);
         }

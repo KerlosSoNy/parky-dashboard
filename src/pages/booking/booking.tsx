@@ -2,30 +2,25 @@ import { useState } from "react";
 import { Customer } from "../../types";
 import { Plus } from "lucide-react";
 import CustomerTable from "../../components/table/table";
+import DeletePopUp from "../../components/common/deleteDialog/deleteDialog";
+import { Link, useNavigate } from "react-router";
 
 export default function Booking() {
     const [data, setData] = useState<any[]>(
         [
-            { bookingId: '#B001', customerName: 'Olivia Rhye', carModel: 'Mercedes', bookingDate: '13-12-2024', status: 'Confirmed' },
-            { bookingId: '#B002', customerName: 'Phoenix Baker', carModel: 'BMW', bookingDate: '15-12-2024', status: 'Pending' },
-            { bookingId: '#B003', customerName: 'Lana Steiner', carModel: 'Audi', bookingDate: '20-12-2024', status: 'Cancelled' },
-            { bookingId: '#B003', customerName: 'Lana Steiner', carModel: 'Audi', bookingDate: '20-12-2024', status: 'Cancelled' },
-            { bookingId: '#B002', customerName: 'Phoenix Baker', carModel: 'BMW', bookingDate: '15-12-2024', status: 'Pending' },
-            { bookingId: '#B003', customerName: 'Lana Steiner', carModel: 'Audi', bookingDate: '20-12-2024', status: 'Cancelled' },
-            { bookingId: '#B003', customerName: 'Lana Steiner', carModel: 'Audi', bookingDate: '20-12-2024', status: 'Cancelled' },
-            { bookingId: '#B001', customerName: 'Olivia Rhye', carModel: 'Mercedes', bookingDate: '13-12-2024', status: 'Confirmed' },
-            { bookingId: '#B003', customerName: 'Lana Steiner', carModel: 'Audi', bookingDate: '20-12-2024', status: 'Cancelled' },
+            { id: '#B001', customerName: 'Olivia Rhye', carModel: 'Mercedes', bookingDate: '13-12-2024', status: 'Confirmed' },
+            { id: '#B002', customerName: 'Phoenix Baker', carModel: 'BMW', bookingDate: '15-12-2024', status: 'Pending' },
+            { id: '#B003', customerName: 'Lana Steiner', carModel: 'Audi', bookingDate: '20-12-2024', status: 'Cancelled' },
+            { id: '#B003', customerName: 'Lana Steiner', carModel: 'Audi', bookingDate: '20-12-2024', status: 'Cancelled' },
+            { id: '#B002', customerName: 'Phoenix Baker', carModel: 'BMW', bookingDate: '15-12-2024', status: 'Pending' },
+            { id: '#B003', customerName: 'Lana Steiner', carModel: 'Audi', bookingDate: '20-12-2024', status: 'Cancelled' },
+            { id: '#B003', customerName: 'Lana Steiner', carModel: 'Audi', bookingDate: '20-12-2024', status: 'Cancelled' },
+            { id: '#B001', customerName: 'Olivia Rhye', carModel: 'Mercedes', bookingDate: '13-12-2024', status: 'Confirmed' },
+            { id: '#B003', customerName: 'Lana Steiner', carModel: 'Audi', bookingDate: '20-12-2024', status: 'Cancelled' },
         ]);
-
-    const handleEdit = (customer: any) => {
-        console.log('Edit customer:', customer);
-        // Implement edit functionality
-    };
-
-    const handleDelete = (customer: any) => {
-        console.log('Delete customer:', customer);
-        // Implement delete functionality
-        setData(data.filter(c => c.id !== customer.id));
+    const navigate = useNavigate()
+    const handleEdit = (id: any) => {
+        navigate(`/dashboard/booking/edit/${id}`)
     };
 
     const handleSort = (field: keyof Customer, direction: 'asc' | 'desc') => {
@@ -62,22 +57,25 @@ export default function Booking() {
                 <Filter size={16} className="mr-2" />
                 Filter
             </button> */}
-            <button className="inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            <Link to='add' className="inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                 <Plus size={16} className="mr-2" />
-                Add Customer
-            </button>
+                Add Booking
+            </Link>
         </div>
     );
 
     // Custom column headers
     const customColumnHeaders: { key: string; label: string; sortable?: boolean }[] = [
-        { key: 'bookingId', label: 'Booking ID', sortable: true },
+        { key: 'id', label: 'Booking ID', sortable: true },
         { key: 'customerName', label: 'Customer Name', sortable: true },
         { key: 'carModel', label: 'Car Model', sortable: true },
         { key: 'bookingDate', label: 'Booking Date', sortable: true },
         { key: 'status', label: 'Status', sortable: true },
     ];
-
+    const [isOpen, setIsOpen] = useState(false);
+    const handleDelete = () => {
+        setIsOpen(true)
+    };
 
     return (
         <div className="max-w-full  bg-gray-50 p-6">
@@ -95,6 +93,13 @@ export default function Booking() {
                     onPageChange={handlePageChange}
                 />
             </div>
+            <DeletePopUp
+                isOpen={isOpen}
+                onClose={() => setIsOpen(false)}
+                onConfirm={async () => {
+                    setIsOpen(false)
+                }}
+            />
         </div>
     )
 }

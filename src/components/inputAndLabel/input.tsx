@@ -69,7 +69,7 @@ export default function InputAndLabel({
                     onChange={onChange}
                     className={`${icon ? "ps-14" : ""
                         } text-[#333] outline-none  mb-1 focus:outline-none
-          w-full h-12 p-3 rounded-lg border ${error ? "border-[#F55157]" : "border-gray-200 "
+                        w-full h-12 p-3 rounded-lg border ${error ? "border-[#F55157]" : "border-gray-200 "
                         } w-full px-6 py-3 text-base font-normal  bg-inherit `}
                 />
                 {icon && (

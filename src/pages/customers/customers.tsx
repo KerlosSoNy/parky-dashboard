@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Customer } from "../../types";
 import { Plus } from "lucide-react";
 import CustomerTable from "../../components/table/table";
+import DeletePopUp from "../../components/common/deleteDialog/deleteDialog";
+import { Link, useNavigate } from "react-router";
 
 export default function Customers() {
     const [customers, setCustomers] = useState<Customer[]>([
@@ -117,17 +119,10 @@ export default function Customers() {
         }
     ]);
 
-    const handleEdit = (customer: Customer) => {
-        console.log('Edit customer:', customer);
-        // Implement edit functionality
+    const navigate = useNavigate()
+    const handleEdit = (id: any) => {
+        navigate(`/dashboard/customers/edit/${id}`)
     };
-
-    const handleDelete = (customer: Customer) => {
-        console.log('Delete customer:', customer);
-        // Implement delete functionality
-        setCustomers(customers.filter(c => c.id !== customer.id));
-    };
-
     const handleSort = (field: keyof Customer, direction: 'asc' | 'desc') => {
         console.log(`Sort by ${field} in ${direction} order`);
         // Implement sorting functionality
@@ -162,10 +157,10 @@ export default function Customers() {
                 <Filter size={16} className="mr-2" />
                 Filter
             </button> */}
-            <button className="inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            <Link to='add' className="inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                 <Plus size={16} className="mr-2" />
                 Add Customer
-            </button>
+            </Link>
         </div>
     );
 
@@ -180,6 +175,10 @@ export default function Customers() {
         { key: 'walletBalance', label: 'Wallet Balance', sortable: true }
     ];
 
+    const [isOpen, setIsOpen] = useState(false);
+    const handleDelete = () => {
+        setIsOpen(true)
+    };
 
     return (
         <div className="max-w-full  bg-gray-50 p-6">
@@ -187,8 +186,8 @@ export default function Customers() {
                 <CustomerTable
                     data={customers}
                     totalCustomers={150157}
-                    title="Countries"
-                    subTitle="Country"
+                    title="Customers"
+                    subTitle="Customer"
                     headerContent={headerContent}
                     columnHeaders={customColumnHeaders}
                     onEdit={handleEdit}
@@ -197,6 +196,13 @@ export default function Customers() {
                     onPageChange={handlePageChange}
                 />
             </div>
+            <DeletePopUp
+                isOpen={isOpen}
+                onClose={() => setIsOpen(false)}
+                onConfirm={async () => {
+                    setIsOpen(false)
+                }}
+            />
         </div>
     )
 }

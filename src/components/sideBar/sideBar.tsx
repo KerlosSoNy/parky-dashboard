@@ -8,14 +8,11 @@ export default function SideBar() {
     const location = useLocation();
     const Menu = useSelector((state: RootState) => state.Menu.menu);
 
-
-
     return (
         <div
             className={`${Menu ? "!w-[300px]" : "!w-[100px]"} duration-500 transition-all`}
         >
             <div
-
                 className={`${Menu ? "w-[300px]" : "w-[100px]"
                     }  transition-all duration-500 ease-out bg-gradient-to-b border-[#E6EFF5] from-white border-e-[1px] ${Menu ? "open" : "closed"
                     }`}

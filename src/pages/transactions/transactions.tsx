@@ -2,34 +2,29 @@ import { useState } from "react";
 import { Customer } from "../../types";
 import { Plus } from "lucide-react";
 import CustomerTable from "../../components/table/table";
+import DeletePopUp from "../../components/common/deleteDialog/deleteDialog";
+import { Link, useNavigate } from "react-router";
 
 export default function Transactions() {
     const [data, setData] = useState<any[]>(
         [
-            { transactionId: '#T001', customerName: 'Olivia Rhye', amount: '300 EGP', date: '13-12-2024', status: 'Completed' },
-            { transactionId: '#T002', customerName: 'Phoenix Baker', amount: '500 EGP', date: '15-12-2024', status: 'Pending' },
-            { transactionId: '#T003', customerName: 'Lana Steiner', amount: '200 EGP', date: '20-12-2024', status: 'Failed' },
-            { transactionId: '#T001', customerName: 'Olivia Rhye', amount: '300 EGP', date: '13-12-2024', status: 'Completed' },
-            { transactionId: '#T002', customerName: 'Phoenix Baker', amount: '500 EGP', date: '15-12-2024', status: 'Pending' },
-            { transactionId: '#T003', customerName: 'Lana Steiner', amount: '200 EGP', date: '20-12-2024', status: 'Failed' },
-            { transactionId: '#T001', customerName: 'Olivia Rhye', amount: '300 EGP', date: '13-12-2024', status: 'Completed' },
-            { transactionId: '#T002', customerName: 'Phoenix Baker', amount: '500 EGP', date: '15-12-2024', status: 'Pending' },
-            { transactionId: '#T003', customerName: 'Lana Steiner', amount: '200 EGP', date: '20-12-2024', status: 'Failed' },
-            { transactionId: '#T001', customerName: 'Olivia Rhye', amount: '300 EGP', date: '13-12-2024', status: 'Completed' },
-            { transactionId: '#T002', customerName: 'Phoenix Baker', amount: '500 EGP', date: '15-12-2024', status: 'Pending' },
-            { transactionId: '#T003', customerName: 'Lana Steiner', amount: '200 EGP', date: '20-12-2024', status: 'Failed' },
+            { id: '#T001', customerName: 'Olivia Rhye', amount: '300 EGP', date: '13-12-2024', status: 'Completed' },
+            { id: '#T002', customerName: 'Phoenix Baker', amount: '500 EGP', date: '15-12-2024', status: 'Pending' },
+            { id: '#T003', customerName: 'Lana Steiner', amount: '200 EGP', date: '20-12-2024', status: 'Failed' },
+            { id: '#T001', customerName: 'Olivia Rhye', amount: '300 EGP', date: '13-12-2024', status: 'Completed' },
+            { id: '#T002', customerName: 'Phoenix Baker', amount: '500 EGP', date: '15-12-2024', status: 'Pending' },
+            { id: '#T003', customerName: 'Lana Steiner', amount: '200 EGP', date: '20-12-2024', status: 'Failed' },
+            { id: '#T001', customerName: 'Olivia Rhye', amount: '300 EGP', date: '13-12-2024', status: 'Completed' },
+            { id: '#T002', customerName: 'Phoenix Baker', amount: '500 EGP', date: '15-12-2024', status: 'Pending' },
+            { id: '#T003', customerName: 'Lana Steiner', amount: '200 EGP', date: '20-12-2024', status: 'Failed' },
+            { id: '#T001', customerName: 'Olivia Rhye', amount: '300 EGP', date: '13-12-2024', status: 'Completed' },
+            { id: '#T002', customerName: 'Phoenix Baker', amount: '500 EGP', date: '15-12-2024', status: 'Pending' },
+            { id: '#T003', customerName: 'Lana Steiner', amount: '200 EGP', date: '20-12-2024', status: 'Failed' },
 
         ]);
-
-    const handleEdit = (customer: any) => {
-        console.log('Edit customer:', customer);
-        // Implement edit functionality
-    };
-
-    const handleDelete = (customer: any) => {
-        console.log('Delete customer:', customer);
-        // Implement delete functionality
-        setData(data.filter(c => c.id !== customer.id));
+    const navigate = useNavigate()
+    const handleEdit = (id: any) => {
+        navigate(`/dashboard/transactions/edit/${id}`)
     };
 
     const handleSort = (field: keyof Customer, direction: 'asc' | 'desc') => {
@@ -66,22 +61,26 @@ export default function Transactions() {
                 <Filter size={16} className="mr-2" />
                 Filter
             </button> */}
-            <button className="inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            <Link to='add' className="inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                 <Plus size={16} className="mr-2" />
-                Add Customer
-            </button>
+                Add Transaction
+            </Link>
         </div>
     );
 
     // Custom column headers
     const customColumnHeaders: { key: string; label: string; sortable?: boolean }[] = [
-        { key: 'transactionId', label: 'Transaction ID', sortable: true },
+        { key: 'id', label: 'Transaction ID', sortable: true },
         { key: 'customerName', label: 'Customer Name', sortable: true },
         { key: 'amount', label: 'Amount', sortable: true },
         { key: 'date', label: 'Date', sortable: true },
         { key: 'status', label: 'Status', sortable: true },
     ];
 
+    const [isOpen, setIsOpen] = useState(false);
+    const handleDelete = () => {
+        setIsOpen(true)
+    };
 
     return (
         <div className="max-w-full  bg-gray-50 p-6">
@@ -99,6 +98,13 @@ export default function Transactions() {
                     onPageChange={handlePageChange}
                 />
             </div>
+            <DeletePopUp
+                isOpen={isOpen}
+                onClose={() => setIsOpen(false)}
+                onConfirm={async () => {
+                    setIsOpen(false)
+                }}
+            />
         </div>
     )
 }

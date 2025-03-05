@@ -21,7 +21,7 @@ export default function TopNavbar() {
     const dispatch = useDispatch<AppDispatch>();
     return (
 
-        <nav className=" flex justify-between w-full items-center py-4 px-6 bg-[#FFFFFF] ">
+        <nav className=" flex justify-between max-w-full items-center py-4 px-6 bg-[#FFFFFF] ">
             <div className="flex flex-row">
                 <button
                     aria-label="Toggle navigation"
