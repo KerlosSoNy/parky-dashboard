@@ -35,7 +35,7 @@ export function useLogin() {
     //     .get("/sanctum/csrf-cookie")
     //     .then(() => {
         axiosInstance
-            .post("/api/login", data)
+            .post("login", data)
             .then(async (result:any) => {
             localStorage.setItem("token",result.data.access_token );
             dispatch(setUserData(result.data));
