@@ -10,8 +10,11 @@ export const axiosInstance = axios.create({
 // }
 
 axiosInstance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  config.headers.Authorization = `Bearer ${localStorage.getItem("token")}`;
+  if(localStorage.getItem("token") && localStorage.getItem("token") !== null){
+    config.headers.Authorization = `Bearer ${localStorage.getItem("token")}`;
+  } 
   config.headers['Accept-Language'] = document.documentElement.lang;
+  config.headers['Content-Type'] = 'application/json';
   return config;
 });
 

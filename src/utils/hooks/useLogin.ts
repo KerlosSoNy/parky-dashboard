@@ -1,25 +1,15 @@
-import {  useEffect, useState } from "react";
-import { generateKey } from '../functions/encryption'
-import { useDispatch } from "react-redux";
+import { useState } from "react";
 import { toast } from "sonner";
-import { AppDispatch } from "../redux/store";
 import { useNavigate } from "react-router";
 import axiosInstance from "../axios/axios";
-import { setUserData } from "../redux/login";
 
 export function useLogin() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
-  const dispatch = useDispatch<AppDispatch>();
-  const [data, setData] = useState({
-    email: "",
-    password: "",
-  });
-
-  useEffect(() => {
-    generateKey(); 
-  }, []);
-  
+    const [data, setData] = useState({
+        email: "",
+        password: "",
+    });
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setLoading(false)
@@ -34,22 +24,22 @@ export function useLogin() {
     //   axiosInstance
     //     .get("/sanctum/csrf-cookie")
     //     .then(() => {
+        const formData = new FormData();
+        formData.append("email", data.email);
+        formData.append("password", data.password);
         axiosInstance
-            .post("login", data)
-            .then(async (result:any) => {
-            localStorage.setItem("token",result.data.access_token );
-            dispatch(setUserData(result.data));
-            setLoading(false)
+            .post("login/", formData)
+            .then((result:any) => {
+            localStorage.setItem("token",result.data.access );
             navigate("/dashboard");
-            })
-            .catch((error) => {
-                setLoading(true)
-                console.log(error)
+            setLoading(false)
+        })
+        .catch(() => {
+                setLoading(false)
                 toast.error("Wrong email or password", { id: "Error-Validation" });
             });
-        // })
     } else {
-        toast.error("Hi", { id: "Error-Validation" });
+        toast.error("Error", { id: "Error-Validation" });
     }
 };
     return {

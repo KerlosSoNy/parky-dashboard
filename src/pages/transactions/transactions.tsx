@@ -1,27 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Customer } from "../../types";
 import { Plus } from "lucide-react";
 import CustomerTable from "../../components/table/table";
 import DeletePopUp from "../../components/common/deleteDialog/deleteDialog";
 import { Link, useNavigate } from "react-router";
+import axiosInstance from "../../utils/axios/axios";
 
 export default function Transactions() {
-    const [data, setData] = useState<any[]>(
-        [
-            { id: '#T001', customerName: 'Olivia Rhye', amount: '300 EGP', date: '13-12-2024', status: 'Completed' },
-            { id: '#T002', customerName: 'Phoenix Baker', amount: '500 EGP', date: '15-12-2024', status: 'Pending' },
-            { id: '#T003', customerName: 'Lana Steiner', amount: '200 EGP', date: '20-12-2024', status: 'Failed' },
-            { id: '#T001', customerName: 'Olivia Rhye', amount: '300 EGP', date: '13-12-2024', status: 'Completed' },
-            { id: '#T002', customerName: 'Phoenix Baker', amount: '500 EGP', date: '15-12-2024', status: 'Pending' },
-            { id: '#T003', customerName: 'Lana Steiner', amount: '200 EGP', date: '20-12-2024', status: 'Failed' },
-            { id: '#T001', customerName: 'Olivia Rhye', amount: '300 EGP', date: '13-12-2024', status: 'Completed' },
-            { id: '#T002', customerName: 'Phoenix Baker', amount: '500 EGP', date: '15-12-2024', status: 'Pending' },
-            { id: '#T003', customerName: 'Lana Steiner', amount: '200 EGP', date: '20-12-2024', status: 'Failed' },
-            { id: '#T001', customerName: 'Olivia Rhye', amount: '300 EGP', date: '13-12-2024', status: 'Completed' },
-            { id: '#T002', customerName: 'Phoenix Baker', amount: '500 EGP', date: '15-12-2024', status: 'Pending' },
-            { id: '#T003', customerName: 'Lana Steiner', amount: '200 EGP', date: '20-12-2024', status: 'Failed' },
-
-        ]);
+    const [data, setData] = useState<any>()
+    useEffect(() => {
+        axiosInstance.get('transactions/').then((res) => {
+            setData(res?.data)
+        })
+    }, [])
     const navigate = useNavigate()
     const handleEdit = (id: any) => {
         navigate(`/dashboard/transactions/edit/${id}`)
@@ -70,11 +61,11 @@ export default function Transactions() {
 
     // Custom column headers
     const customColumnHeaders: { key: string; label: string; sortable?: boolean }[] = [
-        { key: 'id', label: 'Transaction ID', sortable: true },
-        { key: 'customerName', label: 'Customer Name', sortable: true },
-        { key: 'amount', label: 'Amount', sortable: true },
-        { key: 'date', label: 'Date', sortable: true },
-        { key: 'status', label: 'Status', sortable: true },
+        // { key: 'id', label: 'Transaction ID', sortable: true },
+        // { key: 'customerName', label: 'Customer Name', sortable: true },
+        // { key: 'amount', label: 'Amount', sortable: true },
+        // { key: 'date', label: 'Date', sortable: true },
+        // { key: 'status', label: 'Status', sortable: true },
     ];
 
     const [isOpen, setIsOpen] = useState(false);
@@ -86,8 +77,8 @@ export default function Transactions() {
         <div className="max-w-full  bg-gray-50 p-6">
             <div className="mx-auto">
                 <CustomerTable
-                    data={data}
-                    totalCustomers={5017}
+                    data={data || []}
+                    totalCustomers={data?.length || 0}
                     title="Transactions"
                     subTitle="Transaction"
                     headerContent={headerContent}

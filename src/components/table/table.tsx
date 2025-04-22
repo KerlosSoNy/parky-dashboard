@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight, MoreVertical, Edit, Trash2, ChevronUp, ChevronDown } from 'lucide-react';
+import { ChevronLeft, ChevronRight, MoreVertical, Edit, Trash2, ChevronUp, ChevronDown, Eye } from 'lucide-react';
 
 export interface ColumnHeader {
     key: string;
@@ -17,6 +17,7 @@ interface CustomerTableProps {
     columnHeaders?: ColumnHeader[];
     onEdit?: (item: any) => void;
     onDelete?: (item: any) => void;
+    onView?: (item: any) => void;
     onSort?: (field: any, direction: 'asc' | 'desc') => void;
     onPageChange?: (page: number) => void;
 }
@@ -30,6 +31,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
     columnHeaders,
     onEdit,
     onDelete,
+    onView,
     onSort,
     onPageChange
 }) => {
@@ -83,9 +85,13 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
     };
 
     const handleEdit = (item_id: number) => {
-        console.log(item_id)
         if (onEdit) {
             onEdit(item_id);
+        }
+    };
+    const handleView = (item_id: number) => {
+        if (onView) {
+            onView(item_id);
         }
     };
 
@@ -111,7 +117,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
                         <tr>
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 <div className="flex items-center space-x-1">
-                                    <span>{headers[0].label}</span>
+                                    <span>{headers[0]?.label}</span>
                                 </div>
                             </th>
                             {headers.slice(1).map((header: any) => (
@@ -158,11 +164,12 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
                                                 </span>
                                             </td>
                                         )
-                                    } else if (header?.key === 'name') {
+                                    } else if (header?.key === 'name' || header?.key === 'first_name' || header?.key === 'last_name') {
+                                        console.log(item?.profile_picture)
                                         return (<td className="px-6 py-4 whitespace-nowrap">
                                             <div className="flex items-center">
-                                                {item?.avatar && <div className="flex-shrink-0 h-10 w-10">
-                                                    <img className="h-10 w-10 rounded-full" src={item.avatar} alt="" />
+                                                {(item?.avatar || item?.profile_picture) && <div className="flex-shrink-0 h-10 w-10">
+                                                    <img className="h-10 w-10 rounded-full" src={item.avatar || item?.profile_picture} alt="" />
                                                 </div>}
                                                 <div className="ml-4">
                                                     <div className="text-sm font-medium text-gray-900">
@@ -183,6 +190,17 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
                                                 </span>
                                             </td>
                                         )
+                                    } else if (header?.key === 'is_active') {
+                                        return (
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${item.is_active
+                                                    ? 'bg-blue-100 text-blue-800'
+                                                    : 'bg-purple-100 text-purple-800'
+                                                    }`}>
+                                                    {item.is_active ? "Active" : "Inactive"}
+                                                </span>
+                                            </td>
+                                        )
                                     } else if (header?.key === 'color') {
                                         return (
                                             <td className="px-6 py-4 whitespace-nowrap">
@@ -199,11 +217,19 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
                                             </td>
                                         )
                                     } else {
-                                        return (
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                {header.render ? header.render(item) : item[header.key]}
-                                            </td>
-                                        )
+                                        if (header?.key === "end_time" || header?.key === "start_time") {
+                                            return (
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    {item[header.key].split("T")[0] + " " + item[header.key].split("T")[1].split(".")[0].split(":")[0] + ":" + item[header.key].split("T")[1].split(".")[0].split(":")[1]}
+                                                </td>
+                                            )
+                                        } else {
+                                            return (
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    {header.render ? header.render(item) : item[header.key]}
+                                                </td>
+                                            )
+                                        }
                                     }
                                 })}
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">
@@ -214,6 +240,13 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
                                             onClick={() => handleDelete(item.id)}
                                         >
                                             <Trash2 size={16} />
+                                        </button>
+                                        <button
+                                            title='View'
+                                            className="text-gray-400 hover:text-gray-500"
+                                            onClick={() => handleView(item.id)}
+                                        >
+                                            <Eye size={16} />
                                         </button>
                                         <button
                                             title='Edit'

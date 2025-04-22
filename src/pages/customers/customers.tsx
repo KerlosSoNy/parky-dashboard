@@ -1,137 +1,30 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Customer } from "../../types";
-import { Plus } from "lucide-react";
 import CustomerTable from "../../components/table/table";
 import DeletePopUp from "../../components/common/deleteDialog/deleteDialog";
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
+import axiosInstance from "../../utils/axios/axios";
+import { toast } from "sonner";
 
 export default function Customers() {
-    const [customers, setCustomers] = useState<Customer[]>([
-        {
-            id: '#3066',
-            name: 'Olivia Rhye',
-            email: 'olivia@untitledui.com',
-            number: '+20 101 981 1806',
-            licenseId: 'ABC 123',
-            registrationDate: '13 - 12 - 2024',
-            subscriptionType: 'Standard',
-            walletBalance: '+500 EGP',
-            avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-        },
-        {
-            id: '#3065',
-            name: 'Phoenix Baker',
-            email: 'phoenix@untitledui.com',
-            number: '+20 101 981 1806',
-            licenseId: 'ABC 123',
-            registrationDate: '13 - 12 - 2024',
-            subscriptionType: 'VIP',
-            walletBalance: '+500 EGP',
-            avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-        },
-        {
-            id: '#3064',
-            name: 'Lana Steiner',
-            email: 'lana@untitledui.com',
-            number: '+20 101 981 1806',
-            licenseId: 'ABC 123',
-            registrationDate: '13 - 12 - 2024',
-            subscriptionType: 'Standard',
-            walletBalance: '+500 EGP',
-            avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-        },
-        {
-            id: '#3063',
-            name: 'Demi Wilkinson',
-            email: 'demi@untitledui.com',
-            number: '+20 101 981 1806',
-            licenseId: 'ABC 123',
-            registrationDate: '13 - 12 - 2024',
-            subscriptionType: 'VIP',
-            walletBalance: '-300 EGP',
-            avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-        },
-        {
-            id: '#3062',
-            name: 'Candice Wu',
-            email: 'candice@untitledui.com',
-            number: '+20 101 981 1806',
-            licenseId: 'ABC 123',
-            registrationDate: '13 - 12 - 2024',
-            subscriptionType: 'Standard',
-            walletBalance: '+500 EGP',
-            avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-        },
-        {
-            id: '#3061',
-            name: 'Natali Craig',
-            email: 'natali@untitledui.com',
-            number: '+20 101 981 1806',
-            licenseId: 'ABC 123',
-            registrationDate: '13 - 12 - 2024',
-            subscriptionType: 'VIP',
-            walletBalance: '+500 EGP',
-            avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-        },
-        {
-            id: '#3060',
-            name: 'Drew Cano',
-            email: 'drew@untitledui.com',
-            number: '+20 101 981 1806',
-            licenseId: 'ABC 123',
-            registrationDate: '13 - 12 - 2024',
-            subscriptionType: 'Standard',
-            walletBalance: '+500 EGP',
-            avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-        },
-        {
-            id: '#3059',
-            name: 'Orlando Diggs',
-            email: 'orlando@untitledui.com',
-            number: '+20 101 981 1806',
-            licenseId: 'ABC 123',
-            registrationDate: '13 - 12 - 2024',
-            subscriptionType: 'Standard',
-            walletBalance: '+500 EGP',
-            avatar: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-        },
-        {
-            id: '#3058',
-            name: 'Andi Lane',
-            email: 'andi@untitledui.com',
-            number: '+20 101 981 1806',
-            licenseId: 'ABC 123',
-            registrationDate: '13 - 12 - 2024',
-            subscriptionType: 'VIP',
-            walletBalance: '+500 EGP',
-            avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-        },
-        {
-            id: '#3057',
-            name: 'Kate Morrison',
-            email: 'kate@untitledui.com',
-            number: '+20 101 981 1806',
-            licenseId: 'ABC 123',
-            registrationDate: '13 - 12 - 2024',
-            subscriptionType: 'Standard',
-            walletBalance: '+500 EGP',
-            avatar: 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-        }
-    ]);
-
+    const [data, setData] = useState<any>()
+    useEffect(() => {
+        axiosInstance.get('users/').then((res) => {
+            setData(res?.data)
+        })
+    }, [])
     const navigate = useNavigate()
     const handleEdit = (id: any) => {
         navigate(`/dashboard/customers/edit/${id}`)
     };
     const handleSort = (field: keyof Customer, direction: 'asc' | 'desc') => {
-        console.log(`Sort by ${field} in ${direction} order`);
         // Implement sorting functionality
-        const sortedCustomers = [...customers].sort((a, b) => {
+        const sortedCustomers = [...data].sort((a, b) => {
             if (a[field] < b[field]) return direction === 'asc' ? -1 : 1;
             if (a[field] > b[field]) return direction === 'asc' ? 1 : -1;
             return 0;
         });
-        setCustomers(sortedCustomers);
+        setData(sortedCustomers);
     };
 
     const handlePageChange = (page: number) => {
@@ -157,41 +50,55 @@ export default function Customers() {
                 <Filter size={16} className="mr-2" />
                 Filter
             </button> */}
-            <Link to='add' className="inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            {/* <Link to='add' className="inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                 <Plus size={16} className="mr-2" />
                 Add Customer
-            </Link>
+            </Link> */}
         </div>
     );
 
     // Custom column headers
     const customColumnHeaders: { key: string; label: string; sortable?: boolean }[] = [
         { key: 'id', label: 'ID', sortable: false },
-        { key: 'name', label: 'Customer', sortable: true },
-        { key: 'number', label: 'Number', sortable: true },
-        { key: 'licenseId', label: 'License ID', sortable: false },
-        { key: 'registrationDate', label: 'Registration Date', sortable: true },
-        { key: 'subscriptionType', label: 'Subscription Type', sortable: true },
-        { key: 'walletBalance', label: 'Wallet Balance', sortable: true }
+        { key: 'first_name', label: 'Customer', sortable: true },
+        { key: 'email', label: 'email', sortable: true },
+        { key: 'national_id', label: 'Nationality ID', sortable: false },
+        { key: 'subscription_type', label: 'Subscription Type', sortable: true },
+        { key: 'is_active', label: 'Active', sortable: true },
     ];
-
+    const [id, setId] = useState<number | null>(null)
     const [isOpen, setIsOpen] = useState(false);
-    const handleDelete = () => {
-        setIsOpen(true)
+    const handleDelete = (user_id: number) => {
+        setIsOpen(true);
+        setId(user_id);
     };
 
+    const handleView = (item_id: number) => {
+        console.log(item_id);
+    };
+
+    const confirmDelete = async () => {
+        axiosInstance.delete(`users/${id}/`).then(() => {
+            setData(data.filter((item: any) => item.id !== id))
+            setIsOpen(false)
+            toast.success("Customer deleted successfully", { id: "Error-Validation" });
+        }).catch(() => {
+            toast.error("Error deleting customer", { id: "Error-Validation" });
+        })
+    }
     return (
         <div className="max-w-full  bg-gray-50 p-6">
             <div className="mx-auto">
                 <CustomerTable
-                    data={customers}
-                    totalCustomers={150157}
+                    data={data || []}
+                    totalCustomers={data?.length || 0}
                     title="Customers"
                     subTitle="Customer"
                     headerContent={headerContent}
                     columnHeaders={customColumnHeaders}
                     onEdit={handleEdit}
                     onDelete={handleDelete}
+                    onView={handleView}
                     onSort={handleSort}
                     onPageChange={handlePageChange}
                 />
@@ -200,7 +107,7 @@ export default function Customers() {
                 isOpen={isOpen}
                 onClose={() => setIsOpen(false)}
                 onConfirm={async () => {
-                    setIsOpen(false)
+                    confirmDelete();
                 }}
             />
         </div>

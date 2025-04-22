@@ -1,23 +1,18 @@
 import { Plus } from 'lucide-react';
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import CustomerTable from '../../components/table/table';
 import DeletePopUp from '../../components/common/deleteDialog/deleteDialog';
 import { Link, useNavigate } from 'react-router';
+import axiosInstance from '../../utils/axios/axios';
+import { toast } from 'sonner';
 
 export default function Garage() {
-    const [garages, setGarages] = useState<any[]>([
-        { id: '#3098', garageName: 'Madrid Garage', address: 'Madrid', noSpots: 25, noFilled: 3 },
-        { id: '#3095', garageName: 'Madrid Garage', address: 'Madrid', noSpots: 21, noFilled: 1 },
-        { id: '#3094', garageName: 'Madrid Garage', address: 'Madrid', noSpots: 12, noFilled: 4 },
-        { id: '#3093', garageName: 'Madrid Garage', address: 'Madrid', noSpots: 15, noFilled: 5 },
-        { id: '#3092', garageName: 'Madrid Garage', address: 'Madrid', noSpots: 74, noFilled: 5 },
-        { id: '#3091', garageName: 'Madrid Garage', address: 'Madrid', noSpots: 12, noFilled: 3 },
-        { id: '#3090', garageName: 'Madrid Garage', address: 'Madrid', noSpots: 25, noFilled: 2 },
-        { id: '#3089', garageName: 'Madrid Garage', address: 'Madrid', noSpots: 7, noFilled: 1 },
-        { id: '#3088', garageName: 'Madrid Garage', address: 'Madrid', noSpots: 21, noFilled: 3 },
-        { id: '#3087', garageName: 'Madrid Garage', address: 'Madrid', noSpots: 27, noFilled: 2 },
-    ]);
-
+    const [data, setData] = useState<any>()
+    useEffect(() => {
+        axiosInstance.get('garages/').then((res) => {
+            setData(res?.data)
+        })
+    }, [])
     const navigate = useNavigate()
     const handleEdit = (id: any) => {
         navigate(`/dashboard/garage/edit/${id}`)
@@ -26,12 +21,12 @@ export default function Garage() {
     const handleSort = (field: any, direction: 'asc' | 'desc') => {
         console.log(`Sort by ${field} in ${direction} order`);
         // Implement sorting functionality
-        const sortedCustomers = [...garages].sort((a, b) => {
+        const sortedCustomers = [...data].sort((a, b) => {
             if (a[field] < b[field]) return direction === 'asc' ? -1 : 1;
             if (a[field] > b[field]) return direction === 'asc' ? 1 : -1;
             return 0;
         });
-        setGarages(sortedCustomers);
+        setData(sortedCustomers);
     };
 
     const handlePageChange = (page: number) => {
@@ -67,28 +62,45 @@ export default function Garage() {
     // Custom column headers
     const customColumnHeaders: { key: string; label: string; sortable?: boolean }[] = [
         { key: 'id', label: 'Car ID', sortable: false },
-        { key: 'garageName', label: 'Garage Name', sortable: true },
-        { key: 'address', label: 'Address', sortable: true },
-        { key: 'noSpots', label: 'No Spots', sortable: false },
-        { key: 'noFilled', label: 'No Filled', sortable: true }
+        { key: 'name', label: 'Garage Name', sortable: true },
+        { key: 'location', label: 'Location', sortable: true },
+        { key: 'total_capacity', label: 'Capacity', sortable: false },
+        { key: 'available_capacity', label: 'Available capacity', sortable: true },
+        { key: 'rating', label: 'Rating', sortable: true }
     ];
 
+    const [id, setId] = useState<number | null>(null)
     const [isOpen, setIsOpen] = useState(false);
-    const handleDelete = () => {
-        setIsOpen(true)
+    const handleDelete = (user_id: number) => {
+        setIsOpen(true);
+        setId(user_id);
     };
 
+    const handleView = (item_id: number) => {
+        console.log(item_id);
+    };
+
+    const confirmDelete = async () => {
+        axiosInstance.delete(`garages/${id}/`).then(() => {
+            setData(data.filter((item: any) => item.id !== id))
+            setIsOpen(false)
+            toast.success("Garage deleted successfully", { id: "Error-Validation" });
+        }).catch(() => {
+            toast.error("Error deleting garage", { id: "Error-Validation" });
+        })
+    }
     return (
         <div className="max-w-full  bg-gray-50 p-6">
             <div className="mx-auto">
                 <CustomerTable
-                    data={garages}
-                    totalCustomers={10157}
+                    data={data || []}
+                    totalCustomers={data?.length || 0}
                     title="Garages"
                     subTitle="Garage"
                     headerContent={headerContent}
                     columnHeaders={customColumnHeaders}
                     onEdit={handleEdit}
+                    onView={handleView}
                     onDelete={handleDelete}
                     onSort={handleSort}
                     onPageChange={handlePageChange}
@@ -97,8 +109,8 @@ export default function Garage() {
             <DeletePopUp
                 isOpen={isOpen}
                 onClose={() => setIsOpen(false)}
-                onConfirm={async () => {
-                    setIsOpen(false)
+                onConfirm={() => {
+                    confirmDelete()
                 }}
             />
         </div>

@@ -1,36 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Customer } from "../../types";
 import { Plus } from "lucide-react";
 import CustomerTable from "../../components/table/table";
 import DeletePopUp from "../../components/common/deleteDialog/deleteDialog";
 import { Link, useNavigate } from "react-router";
+import axiosInstance from "../../utils/axios/axios";
+import { toast } from "sonner";
 
 export default function Cars() {
-    const [data, setData] = useState<any[]>(
-        [{
-            id: '#3066',
-            avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-            name: 'Olivia Rhye', email: 'olivia@untitled.ui', carPlate: '+20 101 081 1806', model: 'Mercedes', color: 'Red'
-        },
-        {
-            id: '#3065',
-            avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80', name: 'Phoenix Baker', email: 'phoenix@untitled.ui', carPlate: '+20 101 081 1806', model: 'Mercedes', color: 'Blue'
-        },
-        { id: '#3064', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80', name: 'Lana Steiner', email: 'lana@untitled.ui', carPlate: '+20 101 081 1806', model: 'Mercedes', color: 'Yellow' },
-        { id: '#3063', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80', name: 'Demi Wilkinson', email: 'demi@untitled.ui', carPlate: '+20 101 081 1806', model: 'Mercedes', color: 'Red' },
-        { id: '#3062', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80', name: 'Candice Wu', email: 'candice@untitled.ui', carPlate: '+20 101 081 1806', model: 'Mercedes', color: 'Blue' },
-        { id: '#3061', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80', name: 'Natali Craig', email: 'natali@untitled.ui', carPlate: '+20 101 081 1806', model: 'Mercedes', color: 'Yellow' },
-        { id: '#3060', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80', name: 'Drew Cano', email: 'drew@untitled.ui', carPlate: '+20 101 081 1806', model: 'Mercedes', color: 'Red' },
-        { id: '#3059', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80', name: 'Orlando Diggs', email: 'orlando@untitled.ui', carPlate: '+20 101 081 1806', model: 'Mercedes', color: 'Blue' },
-        { id: '#3058', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80', name: 'Andi Lane', email: 'andi@untitled.ui', carPlate: '+20 101 081 1806', model: 'Mercedes', color: 'Yellow' },
-        { id: '#3057', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80', name: 'Kate Morrison', email: 'kate@untitled.ui', carPlate: '+20 101 081 1806', model: 'Mercedes', color: 'Red' },
-        ]);
-
     const navigate = useNavigate()
+    const [data, setData] = useState<any>([])
+    useEffect(() => {
+        axiosInstance.get('vehicles/').then((res) => {
+            setData(res?.data)
+        })
+    }, [])
+
     const handleEdit = (id: any) => {
         navigate(`/dashboard/cars/edit/${id}`)
     };
-
+    console.log(data)
     const handleSort = (field: keyof Customer, direction: 'asc' | 'desc') => {
         console.log(`Sort by ${field} in ${direction} order`);
         // Implement sorting functionality
@@ -42,11 +31,11 @@ export default function Cars() {
         setData(sortedCustomers);
     };
 
-    const handlePageChange = (page: number) => {
-        console.log(`Navigate to page ${page}`);
-        // Implement pagination functionality
-        // This would typically involve fetching data for the selected page
-    };
+    // const handlePageChange = (page: number) => {
+    //     console.log(`Navigate to page ${page}`);
+    //     // Implement pagination functionality
+    //     // This would typically involve fetching data for the selected page
+    // };
 
     // Custom header content with search and action buttons
     const headerContent = (
@@ -75,37 +64,53 @@ export default function Cars() {
     // Custom column headers
     const customColumnHeaders: { key: string; label: string; sortable?: boolean }[] = [
         { key: 'id', label: 'Car ID', sortable: false },
-        { key: 'name', label: 'Customer', sortable: true },
-        { key: 'carPlate', label: 'Car Plate', sortable: true },
-        { key: 'model', label: 'Model', sortable: false },
-        { key: 'color', label: 'Color', sortable: true },
+        { key: 'car_model', label: 'Car Name', sortable: true },
+        { key: 'license_plate', label: 'Car Plate', sortable: true },
+        { key: 'vehicle_type', label: 'Model', sortable: false },
+        { key: 'vehicle_color', label: 'Color', sortable: true },
     ];
 
     const [isOpen, setIsOpen] = useState(false);
-    const handleDelete = () => {
-        setIsOpen(true)
+    const [id, setId] = useState<number | null>(null)
+    const handleDelete = (user_id: number) => {
+        setIsOpen(true);
+        setId(user_id);
     };
+
+    const handleView = (item_id: number) => {
+        console.log(item_id);
+    };
+
+    const confirmDelete = async () => {
+        axiosInstance.delete(`vehicles/${id}/`).then(() => {
+            setData(data.filter((item: any) => item.id !== id))
+            toast.success("Car deleted successfully", { id: "Error-Validation" });
+            setIsOpen(false)
+        }).catch(() => {
+            toast.error("Error deleting car", { id: "Error-Validation" });
+        })
+    }
     return (
         <div className="max-w-full  bg-gray-50 p-6">
             <div className="mx-auto">
                 <CustomerTable
-                    data={data}
-                    totalCustomers={50157}
+                    data={data || []}
+                    totalCustomers={data?.length || 0}
                     title="Cars"
                     subTitle="Car"
                     headerContent={headerContent}
                     columnHeaders={customColumnHeaders}
                     onEdit={handleEdit}
+                    onView={handleView}
                     onDelete={handleDelete}
                     onSort={handleSort}
-                    onPageChange={handlePageChange}
                 />
             </div>
             <DeletePopUp
                 isOpen={isOpen}
                 onClose={() => setIsOpen(false)}
-                onConfirm={async () => {
-                    setIsOpen(false)
+                onConfirm={() => {
+                    confirmDelete();
                 }}
             />
         </div>

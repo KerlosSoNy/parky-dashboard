@@ -1,23 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Customer } from "../../types";
 import { Plus } from "lucide-react";
 import CustomerTable from "../../components/table/table";
 import DeletePopUp from "../../components/common/deleteDialog/deleteDialog";
 import { Link, useNavigate } from "react-router";
+import axiosInstance from "../../utils/axios/axios";
+import { toast } from "sonner";
 
 export default function Booking() {
-    const [data, setData] = useState<any[]>(
-        [
-            { id: '#B001', customerName: 'Olivia Rhye', carModel: 'Mercedes', bookingDate: '13-12-2024', status: 'Confirmed' },
-            { id: '#B002', customerName: 'Phoenix Baker', carModel: 'BMW', bookingDate: '15-12-2024', status: 'Pending' },
-            { id: '#B003', customerName: 'Lana Steiner', carModel: 'Audi', bookingDate: '20-12-2024', status: 'Cancelled' },
-            { id: '#B003', customerName: 'Lana Steiner', carModel: 'Audi', bookingDate: '20-12-2024', status: 'Cancelled' },
-            { id: '#B002', customerName: 'Phoenix Baker', carModel: 'BMW', bookingDate: '15-12-2024', status: 'Pending' },
-            { id: '#B003', customerName: 'Lana Steiner', carModel: 'Audi', bookingDate: '20-12-2024', status: 'Cancelled' },
-            { id: '#B003', customerName: 'Lana Steiner', carModel: 'Audi', bookingDate: '20-12-2024', status: 'Cancelled' },
-            { id: '#B001', customerName: 'Olivia Rhye', carModel: 'Mercedes', bookingDate: '13-12-2024', status: 'Confirmed' },
-            { id: '#B003', customerName: 'Lana Steiner', carModel: 'Audi', bookingDate: '20-12-2024', status: 'Cancelled' },
-        ]);
+    const [data, setData] = useState<any>()
+    useEffect(() => {
+        axiosInstance.get('reservations/').then((res) => {
+            setData(res?.data)
+        })
+    }, [])
     const navigate = useNavigate()
     const handleEdit = (id: any) => {
         navigate(`/dashboard/booking/edit/${id}`)
@@ -67,22 +63,39 @@ export default function Booking() {
     // Custom column headers
     const customColumnHeaders: { key: string; label: string; sortable?: boolean }[] = [
         { key: 'id', label: 'Booking ID', sortable: true },
-        { key: 'customerName', label: 'Customer Name', sortable: true },
-        { key: 'carModel', label: 'Car Model', sortable: true },
-        { key: 'bookingDate', label: 'Booking Date', sortable: true },
-        { key: 'status', label: 'Status', sortable: true },
+        { key: 'user', label: 'Customer Name', sortable: true },
+        { key: 'vehicle', label: 'Vehicle', sortable: true },
+        { key: 'total_cost', label: 'Total cost', sortable: true },
+        { key: 'start_time', label: 'Start time', sortable: true },
+        { key: 'end_time', label: 'End time', sortable: true },
     ];
+    const [id, setId] = useState<number | null>(null)
     const [isOpen, setIsOpen] = useState(false);
-    const handleDelete = () => {
-        setIsOpen(true)
+    const handleDelete = (user_id: number) => {
+        setIsOpen(true);
+        setId(user_id);
     };
+
+    const handleView = (item_id: number) => {
+        console.log(item_id);
+    };
+
+    const confirmDelete = async () => {
+        axiosInstance.delete(`reservations/${id}/`).then(() => {
+            setData(data.filter((item: any) => item.id !== id))
+            setIsOpen(false)
+            toast.success("Booking deleted successfully", { id: "Error-Validation" });
+        }).catch(() => {
+            toast.error("Error deleting Booking", { id: "Error-Validation" });
+        })
+    }
 
     return (
         <div className="max-w-full  bg-gray-50 p-6">
             <div className="mx-auto">
                 <CustomerTable
-                    data={data}
-                    totalCustomers={1157}
+                    data={data || []}
+                    totalCustomers={data?.length || 0}
                     title="Booking"
                     subTitle="Books"
                     headerContent={headerContent}
@@ -90,14 +103,15 @@ export default function Booking() {
                     onEdit={handleEdit}
                     onDelete={handleDelete}
                     onSort={handleSort}
+                    onView={handleView}
                     onPageChange={handlePageChange}
                 />
             </div>
             <DeletePopUp
                 isOpen={isOpen}
                 onClose={() => setIsOpen(false)}
-                onConfirm={async () => {
-                    setIsOpen(false)
+                onConfirm={() => {
+                    confirmDelete()
                 }}
             />
         </div>

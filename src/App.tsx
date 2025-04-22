@@ -47,7 +47,8 @@ export default function App() {
               type="button"
               onClick={handleSubmit}
               disabled={loading}
-              className={`w-full py-3 z-[10] mt-8 bg-primary text-white rounded-md font-semibold ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+              className={`
+                w-full py-3 z-[10] hover:cursor-pointer mt-8 bg-primary text-white rounded-md font-semibold ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
             >
               {"Login"}
             </button>
