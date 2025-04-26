@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Customer } from "../../types";
 import CustomerTable from "../../components/table/table";
 import DeletePopUp from "../../components/common/deleteDialog/deleteDialog";
-import { useNavigate } from "react-router";
 import axiosInstance from "../../utils/axios/axios";
 import { toast } from "sonner";
 
@@ -13,10 +12,7 @@ export default function Customers() {
             setData(res?.data)
         })
     }, [])
-    const navigate = useNavigate()
-    const handleEdit = (id: any) => {
-        navigate(`/dashboard/customers/edit/${id}`)
-    };
+
     const handleSort = (field: keyof Customer, direction: 'asc' | 'desc') => {
         // Implement sorting functionality
         const sortedCustomers = [...data].sort((a, b) => {
@@ -73,10 +69,6 @@ export default function Customers() {
         setId(user_id);
     };
 
-    const handleView = (item_id: number) => {
-        console.log(item_id);
-    };
-
     const confirmDelete = async () => {
         axiosInstance.delete(`users/${id}/`).then(() => {
             setData(data.filter((item: any) => item.id !== id))
@@ -96,9 +88,7 @@ export default function Customers() {
                     subTitle="Customer"
                     headerContent={headerContent}
                     columnHeaders={customColumnHeaders}
-                    onEdit={handleEdit}
                     onDelete={handleDelete}
-                    onView={handleView}
                     onSort={handleSort}
                     onPageChange={handlePageChange}
                 />

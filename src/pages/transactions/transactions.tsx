@@ -3,8 +3,9 @@ import { Customer } from "../../types";
 import { Plus } from "lucide-react";
 import CustomerTable from "../../components/table/table";
 import DeletePopUp from "../../components/common/deleteDialog/deleteDialog";
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 import axiosInstance from "../../utils/axios/axios";
+import { toast } from "sonner";
 
 export default function Transactions() {
     const [data, setData] = useState<any>()
@@ -13,10 +14,6 @@ export default function Transactions() {
             setData(res?.data)
         })
     }, [])
-    const navigate = useNavigate()
-    const handleEdit = (id: any) => {
-        navigate(`/dashboard/transactions/edit/${id}`)
-    };
 
     const handleSort = (field: keyof Customer, direction: 'asc' | 'desc') => {
         console.log(`Sort by ${field} in ${direction} order`);
@@ -69,10 +66,23 @@ export default function Transactions() {
     ];
 
     const [isOpen, setIsOpen] = useState(false);
-    const handleDelete = () => {
-        setIsOpen(true)
+    const [id, setId] = useState<number | null>(null)
+    const handleDelete = (user_id: number) => {
+        setIsOpen(true);
+        setId(user_id);
     };
 
+
+
+    const confirmDelete = async () => {
+        axiosInstance.delete(`transactions/${id}/`).then(() => {
+            setData(data.filter((item: any) => item.id !== id))
+            toast.success("Car deleted successfully", { id: "Error-Validation" });
+            setIsOpen(false)
+        }).catch(() => {
+            toast.error("Error deleting car", { id: "Error-Validation" });
+        })
+    }
     return (
         <div className="max-w-full  bg-gray-50 p-6">
             <div className="mx-auto">
@@ -83,7 +93,6 @@ export default function Transactions() {
                     subTitle="Transaction"
                     headerContent={headerContent}
                     columnHeaders={customColumnHeaders}
-                    onEdit={handleEdit}
                     onDelete={handleDelete}
                     onSort={handleSort}
                     onPageChange={handlePageChange}
@@ -93,7 +102,7 @@ export default function Transactions() {
                 isOpen={isOpen}
                 onClose={() => setIsOpen(false)}
                 onConfirm={async () => {
-                    setIsOpen(false)
+                    confirmDelete()
                 }}
             />
         </div>

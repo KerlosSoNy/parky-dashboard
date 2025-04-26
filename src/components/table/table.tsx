@@ -112,7 +112,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
             </div>
 
             <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
+                <table className="min-w-full divide-y divide-gray-200 w-full">
                     <thead className="bg-gray-50">
                         <tr>
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -141,8 +141,9 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
                             </th>
                         </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                        {data.map((item: any) => (
+                    <tbody className="bg-white divide-y divide-gray-200 w-full">
+
+                        {data?.length > 0 ? data.map((item: any) => (
                             <tr key={item.id} className="hover:bg-gray-50">
                                 {headers.map((header: any) => {
                                     if (header?.key === 'id') {
@@ -165,7 +166,6 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
                                             </td>
                                         )
                                     } else if (header?.key === 'name' || header?.key === 'first_name' || header?.key === 'last_name') {
-                                        console.log(item?.profile_picture)
                                         return (<td className="px-6 py-4 whitespace-nowrap">
                                             <div className="flex items-center">
                                                 {(item?.avatar || item?.profile_picture) && <div className="flex-shrink-0 h-10 w-10">
@@ -234,31 +234,33 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
                                 })}
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">
                                     <div className="flex justify-center space-x-2">
-                                        <button
+                                        {onDelete && <button
                                             title='Edit'
                                             className="text-gray-400 hover:text-gray-500"
                                             onClick={() => handleDelete(item.id)}
                                         >
                                             <Trash2 size={16} />
-                                        </button>
-                                        <button
+                                        </button>}
+                                        {onView && <button
                                             title='View'
                                             className="text-gray-400 hover:text-gray-500"
                                             onClick={() => handleView(item.id)}
                                         >
                                             <Eye size={16} />
-                                        </button>
-                                        <button
+                                        </button>}
+                                        {onEdit && <button
                                             title='Edit'
                                             className="text-gray-400 hover:text-gray-500"
                                             onClick={() => handleEdit(item.id)}
                                         >
                                             <Edit size={16} />
-                                        </button>
+                                        </button>}
                                     </div>
                                 </td>
                             </tr>
-                        ))}
+                        )) : <div className='min-h-[10vh] mx-auto w-full flex items-center justify-center'>
+                            <span className='mx-auto text-[16px] font-bold'>No Data</span>
+                        </div>}
                     </tbody>
                 </table>
             </div>

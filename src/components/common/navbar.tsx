@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 import { AppDispatch, RootState } from "../../utils/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { setMenu } from "../../utils/redux/sidebar";
@@ -7,7 +7,6 @@ import { useState } from "react";
 import SearchBar from "./searchBar/searchBar";
 
 export default function TopNavbar() {
-    const navigate = useNavigate();
     const User = useSelector((state: RootState) => state.Login);
     const [currentDateTime] = useState(new Date());
     const formattedDate = currentDateTime.toLocaleDateString('en-GB', {
@@ -41,15 +40,6 @@ export default function TopNavbar() {
             </div>
             <div className="flex flex-wrap items-center gap-4">
                 <SearchBar />
-                <button
-                    onClick={() => navigate("/dashboard/notification")}
-                    className="relative flex items-center justify-center"
-                >
-                    <img src="/assets/icons/notification.svg" alt="" />
-                    <span className="absolute end-[-5px] -top-[10px] inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">
-                        3
-                    </span>
-                </button>
                 <div className="flex items-center space-x-[20px]">
                     <Link to={"profile"}>
                         <img

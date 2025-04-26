@@ -21,9 +21,6 @@ export function useLogin() {
 
     const handleSubmit = () => {
     if (data.email !== '' && data.password !== '') {
-    //   axiosInstance
-    //     .get("/sanctum/csrf-cookie")
-    //     .then(() => {
         const formData = new FormData();
         formData.append("email", data.email);
         formData.append("password", data.password);
@@ -31,6 +28,7 @@ export function useLogin() {
             .post("login/", formData)
             .then((result:any) => {
             localStorage.setItem("token",result.data.access );
+            localStorage.setItem("user", JSON.stringify(result.data));
             navigate("/dashboard");
             setLoading(false)
         })

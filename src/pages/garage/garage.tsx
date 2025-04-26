@@ -77,7 +77,7 @@ export default function Garage() {
     };
 
     const handleView = (item_id: number) => {
-        console.log(item_id);
+        navigate(`/dashboard/garage/view/${item_id}`)
     };
 
     const confirmDelete = async () => {

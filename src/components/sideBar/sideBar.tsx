@@ -1,13 +1,14 @@
 import { useSelector } from "react-redux";
 import { RootState } from "../../utils/redux/store";
 import SignleLink from "../common/signleLinkSideBar.tsx/signleLinkSidebar";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
+import { BiExit } from "react-icons/bi";
 
 
 export default function SideBar() {
     const location = useLocation();
     const Menu = useSelector((state: RootState) => state.Menu.menu);
-
+    const navigate = useNavigate()
     return (
         <div
             className={`${Menu ? "!w-[300px]" : "!w-[100px]"} duration-500 transition-all h-full z-50 border-[#E6EFF5]  border-e-[1px]`}
@@ -125,6 +126,12 @@ export default function SideBar() {
                             to="/dashboard/transactions"
                             currentPath={location.pathname}
                         />
+                        <button type="button" title="log out" onClick={() => {
+                            navigate('/');
+                            localStorage.clear();
+                        }}>
+                            <BiExit size={24} color="#5d5d5d" className="-ms-2 my-4" />
+                        </button>
                     </div>
                 </div>
             </div>

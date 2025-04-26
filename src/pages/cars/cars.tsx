@@ -78,7 +78,7 @@ export default function Cars() {
     };
 
     const handleView = (item_id: number) => {
-        console.log(item_id);
+        navigate(`/dashboard/cars/view/${item_id}`)
     };
 
     const confirmDelete = async () => {

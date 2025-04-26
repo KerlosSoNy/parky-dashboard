@@ -77,7 +77,7 @@ export default function Booking() {
     };
 
     const handleView = (item_id: number) => {
-        console.log(item_id);
+        navigate(`/dashboard/booking/view/${item_id}`)
     };
 
     const confirmDelete = async () => {
